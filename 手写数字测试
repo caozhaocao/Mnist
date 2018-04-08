@@ -1,0 +1,157 @@
+## 手写测试 需要图片背景色为黑色 2018-4-8最优
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import misc
+
+
+
+from PIL import Image
+# path=r'C:\Users\cao\Desktop\MechineL\Data\mnist\5.0.jpg'#测试 可以mnist原数据 经过转换后  ok
+path=r'C:\Users\cao\Desktop\MechineL\Data\newMnist\33.jpg'#ok 黑色背景
+I = Image.open(path)
+# I.show()
+L = I.convert('L')
+# L.show()
+
+#图像压缩 把图像 压缩到(28,28)
+from scipy import misc
+
+new_L = misc.imresize(L, (28,28)) # 第二个参数如果是整数，则为百分比，如果是tuple，则为输出图像的尺寸
+
+#array转图片 ok
+
+misc.imsave(r'C:\Users\cao\Desktop\MechineL\Data\33.jpg',new_L)
+im = Image.open(r'C:\Users\cao\Desktop\MechineL\Data\33.jpg')
+
+#测试手写字
+from keras.models import load_model
+import numpy as np
+#使用keras.models.load_model(filepath)
+#加载模型
+path=r'C:\Users\cao\Desktop\MechineL\TestMnistModel\my_model.h5'
+# 提取模型
+H5model = load_model(path)
+
+#添加数据 加载单个图片数据
+#预测正确 ok
+import os
+from PIL import Image
+def load_simpleData(path):
+    data = np.empty((1,28,28),dtype="float32")# 四维不可以，5为几张图片 1为 一维 灰色，3为彩色 红绿蓝，28*28为横纵坐标
+#     label = np.empty((42000,),dtype="uint8")
+
+#     imgs = os.listdir(path)
+#     num = len(imgs)
+#     for i in range(num):
+    img = Image.open(r'C:\Users\cao\Desktop\MechineL\Data\33.jpg')#(path+'1.jpg')
+#     plt.imshow(img)
+    img.show()
+    arr = np.asarray(img,dtype="float32")
+    data[:,:,:] = arr #  data[i,:,:,:]四维不可以，改为三维可以 使用 data[0]
+#         label[i] = int(imgs[i].split('.')[0])
+    return data#,label
+
+
+#单张手写数字的测试
+dataX=load_simpleData(r'C:\Users\cao\Desktop\MechineL\Data')#最后加\\ 一个为转义符
+# dataX=load_data(r'C:\Users\cao\Desktop\MechineL\Data\newMnist\\')#最后加\\ 一个为转义符
+# print (dataX)
+print (dataX.shape)
+# 将二维数据变成一维数据
+# X_train = X_train.reshape(len(X_train), -1)
+dataX_test = dataX.reshape(len(dataX), -1)
+# print (dataX_test)
+print (dataX_test.shape)
+predictValue=H5model.predict(dataX_test,verbose=0,steps=1)#,batch_size=32
+print (predictValue) #
+
+#多张手写数字的测试
+
+import os  
+    
+def file_name1(file_dir):   
+    L=[]   
+    for root, dirs, files in os.walk(file_dir):  
+        for file in files:  
+            if os.path.splitext(file)[1] == '.jpg':  
+                L.append(os.path.join(root, file))  
+#     print (len(L))
+#     print (L[0])
+#     print (files[0])
+    return L,files 
+
+#test
+file_name1(r'C:\Users\cao\Desktop\MechineL\Data\testPicTran')
+#其中os.path.splitext()函数将路径拆分为文件名+扩展名
+
+#压缩图片2
+from PIL import Image
+from scipy import misc
+Le, files=file_name1(r'C:\Users\cao\Desktop\MechineL\Data\testPicTran')
+print (len(Le))
+for picNum in range(len(Le)):
+# path=r'C:\Users\cao\Desktop\MechineL\Data\mnist\5.0.jpg'#测试 可以mnist原数据 经过转换后  ok
+    path=Le[picNum] #r'C:\Users\cao\Desktop\MechineL\Data\newMnist\33.jpg'#ok 黑色背景
+    I = Image.open(path)
+#     I.show()
+    L = I.convert('L')
+#     L.show()
+    #图片压缩 把图片 压缩到(28,28)
+    new_L = misc.imresize(L, (28,28)) # 第二个参数如果是整数，则为百分比，如果是tuple，则为输出图像的尺寸
+    #array转图片 ok
+#     from scipy import misc
+    misc.imsave(r'C:\Users\cao\Desktop\MechineL\Data\testPicTranTest\\'+files[picNum],new_L)
+    im = Image.open(r'C:\Users\cao\Desktop\MechineL\Data\testPicTranTest\\'+files[picNum])
+#     im.show()
+
+#将图片转化为灰色3
+from keras.models import load_model
+import numpy as np
+#使用keras.models.load_model(filepath)
+#加载模型
+path=r'C:\Users\cao\Desktop\MechineL\TestMnistModel\my_model.h5'
+# 提取模型
+
+
+#多张图片转为灰色4
+#添加数据 加载单个图片数据
+#预测正确 ok
+import os
+from PIL import Image
+def load_MulData(path):
+    data = np.empty((1,28,28),dtype="float32")# 四维不可以，5为几张图片 1为 一维 灰色，3为彩色 红绿蓝，28*28为横纵坐标
+#     label = np.empty((42000,),dtype="uint8")
+
+#     imgs = os.listdir(path)
+#     num = len(imgs)
+#     for i in range(num):
+    img = Image.open(path)#r'C:\Users\cao\Desktop\MechineL\Data\33.jpg')#(path+'1.jpg')
+#     plt.imshow(img)
+#     img.show()
+    arr = np.asarray(img,dtype="float32")
+    data[:,:,:] = arr #  data[i,:,:,:]四维不可以，改为三维可以 使用 data[0]
+#         label[i] = int(imgs[i].split('.')[0])
+    return data#,label
+
+Le, files=file_name1(r'C:\Users\cao\Desktop\MechineL\Data\testPicTranTest')
+# print (np.array(Le[0]))
+# print ((np.array(Le[0])).shape)
+
+# print (len(Le))
+for picNum in range(len(Le)):
+#     print (Le[picNum])
+    path=Le[picNum]
+   
+    dataX=load_MulData(path)#r'C:\Users\cao\Desktop\MechineL\Data\testPicTran\test')#最后加\\ 一个为转义符
+    # dataX=load_data(r'C:\Users\cao\Desktop\MechineL\Data\newMnist\\')#最后加\\ 一个为转义符
+    # print (dataX)
+    #     print (dataX.shape)
+    # 将二维数据变成一维数据
+    # X_train = X_train.reshape(len(X_train), -1)
+    dataX_test = dataX.reshape(len(dataX), -1)
+    # print (dataX_test)
+    #     print (dataX_test.shape)
+    predictValue=H5model.predict(dataX_test,verbose=0,steps=1)#,batch_size=32
+    print (path)
+    print (predictValue) 
+H5model = load_model(path)
