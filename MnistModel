@@ -1,0 +1,54 @@
+##训练mnist模型 用keras
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from keras.datasets import mnist
+from keras.models import Sequential
+from keras.layers.core import Dense, Activation, Dropout
+from keras.utils import np_utils
+
+#降维,三维降二维，二维变一维
+# 将二维数据变成一维数据
+X_train = X_train.reshape(len(X_train), -1)
+X_test = X_test.reshape(len(X_test), -1)
+
+# 接下来对数据进行归一化。原来的数据范围是[0,255]，我们通过归一化时靠近0附近。归一化的方式有很多，大家随意。
+
+# uint不能有负数，我们先转为float类型
+
+X_train = X_train.astype('float32')
+X_test = X_test.astype('float32')
+X_train = (X_train - 127) / 127
+X_test = (X_test - 127) / 127
+
+#进行 One-hot encoding
+nb_classes = 10
+y_train = np_utils.to_categorical(y_train, nb_classes)
+y_test = np_utils.to_categorical(y_test, nb_classes)
+
+#数据已经准备好了，接下来我们进行网络的搭建，我们的网络有三层，都是全连接网络，大概长的像这样 
+#这里新遇到一个Dropout，这是一种防止过拟合(overfitting)的方法  稀疏值
+model = Sequential()
+
+model.add(Dense(512, input_shape=(784,), kernel_initializer='he_normal'))
+model.add(Activation('relu'))
+model.add(Dropout(0.2)) 
+
+model.add(Dense(512, kernel_initializer='he_normal'))
+model.add(Activation('relu'))
+model.add(Dropout(0.2)) 
+
+model.add(Dense(nb_classes))
+model.add(Activation('softmax'))
+
+#模型搭建好了，我们通过编译对学习过程进行配置
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+#训练  神经网络自建模型，即自己定义的模型
+model.fit(X_train, y_train, epochs=20, batch_size=64, verbose=1, validation_split=0.05)
+
+#查看损失值和精确度
+loss, accuracy = model.evaluate(X_test, y_test)
+print('Test loss:', loss)
+print('Accuracy:', accuracy)
