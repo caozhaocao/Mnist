@@ -1,8 +1,11 @@
-#test 单个图片
+#test 单张手写数字图片测试 
 #添加数据 加载单个图片数据
 #预测正确
 import os
+import numpy as np
 from PIL import Image
+from keras.models import load_model
+
 def load_simpleData(path):
     data = np.empty((1,28,28),dtype="float32")# 四维不可以，5为几张图片 1为 一维 灰色，3为彩色 红绿蓝，28*28为横纵坐标
 #     label = np.empty((42000,),dtype="uint8")
@@ -12,27 +15,13 @@ def load_simpleData(path):
 #     for i in range(num):
     img = Image.open(path)
 #     plt.imshow(img)
-    img.show()
+#     img.show()
     arr = np.asarray(img,dtype="float32")
     data[:,:,:] = arr #  data[i,:,:,:]四维不可以，改为三维可以 使用 data[0]
 #         label[i] = int(imgs[i].split('.')[0])
     return data#,label
 
-#test
-path=r'C:\Users\cao\Desktop\MechineL\Data\TestData\2.jpg'
-dataX=load_simpleData(path)#最后加\\ 一个为转义符
-# dataX=load_data(r'C:\Users\cao\Desktop\MechineL\Data\newMnist\\')#最后加\\ 一个为转义符
-# print (dataX)
-print (dataX.shape)
-# 将二维数据变成一维数据
-# X_train = X_train.reshape(len(X_train), -1)
-dataX_test = dataX.reshape(len(dataX), -1)
-# print (dataX_test)
-print (dataX_test.shape)
-predictValue=model.predict(dataX_test,verbose=0,steps=1)#,batch_size=32
-print (predictValue) #
-
-# 测试 多张图片1
+# 单张手写数字图片测试
 from keras.models import load_model
 import numpy as np
 #使用keras.models.load_model(filepath)
@@ -41,8 +30,29 @@ path=r'C:\Users\cao\Desktop\MechineL\TestMnistModel\my_model.h5'
 # 提取模型
 H5model = load_model(path)
 
+#test
+path=r'C:\Users\cao\Desktop\MechineL\Data\TestData\2.jpg'
+dataX=load_simpleData(path)#最后加\\ 一个为转义符
+# dataX=load_data(r'C:\Users\cao\Desktop\MechineL\Data\newMnist\\')#最后加\\ 一个为转义符
+# print (dataX)
+# print (dataX.shape)
+# 将二维数据变成一维数据
+# X_train = X_train.reshape(len(X_train), -1)
+
+
+dataX_test = dataX.reshape(len(dataX), -1)
+# print (dataX_test)
+# print (dataX_test.shape)
+predictValue=H5model.predict(dataX_test,verbose=0,steps=1)#,batch_size=32
+print('单张图片测试')
+print (path)
+print (predictValue) #
+
+
+
+
 import os  
-    
+print('多张图片测试')    
 def file_name1(file_dir):   
     L=[]   
     for root, dirs, files in os.walk(file_dir):  
@@ -60,13 +70,9 @@ for picNum in range(len(picCountData)):
 def load_simpleData(path):
     data = np.empty((1,28,28),dtype="float32")# 四维不可以，5为几张图片 1为 一维 灰色，3为彩色 红绿蓝，28*28为横纵坐标
 #     label = np.empty((42000,),dtype="uint8")
-
-#     imgs = os.listdir(path)
-#     num = len(imgs)
-#     for i in range(num):
     img = Image.open(path)#+'1.jpg')
 #     plt.imshow(img)
-    img.show()
+#     img.show()
     arr = np.asarray(img,dtype="float32")
     data[:,:,:] = arr #  data[i,:,:,:]四维不可以，改为三维可以 使用 data[0]
 #         label[i] = int(imgs[i].split('.')[0])
@@ -80,11 +86,12 @@ for picNum in range(len(picCountData)):
 
     # dataX=load_data(r'C:\Users\cao\Desktop\MechineL\Data\newMnist\\')#最后加\\ 一个为转义符
     # print (dataX)
-    print (dataX.shape)
+#     print (dataX.shape)
     # 将二维数据变成一维数据
     # X_train = X_train.reshape(len(X_train), -1)
     dataX_test = dataX.reshape(len(dataX), -1)
     # print (dataX_test)
-    print (dataX_test.shape)
+#     print (dataX_test.shape)
     predictValue=H5model.predict(dataX_test,verbose=0,steps=1)#,batch_size=32  #有模型
+    print (path)
     print (predictValue) 
