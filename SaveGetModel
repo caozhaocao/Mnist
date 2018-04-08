@@ -1,0 +1,8 @@
+#保存模型
+
+from keras.models import load_model
+
+model.save('new_my_model.h5')
+
+# 提取模型
+H5model = load_model('new_my_model.h5')
